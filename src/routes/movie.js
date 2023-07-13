@@ -19,6 +19,7 @@ movieRouter.get("/", function (req, res, next) {
     total_pages: chunked.length,
   });
 });
+
 movieRouter.get("/most_popular", function (req, res, next) {
   const { page } = res.locals;
   const found = movies.filter((current) => !!current.most_popular);
