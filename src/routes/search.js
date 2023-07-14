@@ -2,7 +2,7 @@ const express = require("express");
 const { chunk } = require("lodash");
 
 const { verifyApiKey, getPageNumber } = require("../middleware");
-const { findMoviesByTitle, findActorsByName } = require("../utils");
+const { findMoviesByQuery, findActorsByName } = require("../utils");
 const { ITEMS_PER_PAGE } = require("../constants");
 
 const ERROR_MESSAGE_DEFAULT = "Failed to find results";
@@ -15,7 +15,7 @@ searchRouter.get("/movie", async (req, res, next) => {
   const queryMovieTitle = req.query.query;
 
   try {
-    const movies = await findMoviesByTitle(queryMovieTitle);
+    const movies = await findMoviesByQuery(queryMovieTitle);
     const chunked = chunk(movies, ITEMS_PER_PAGE);
     const results = chunked[page - 1];
 

@@ -188,16 +188,19 @@ const findActorsByName = async (actorName) => {
 };
 
 /**
- * @param {string} movieTitle
+ * @param {string} movieQuery
  */
-const findMoviesByTitle = async (movieTitle) => {
+const findMoviesByQuery = async (movieQuery) => {
   /**
    * @type {typeof movies}
    */
   const allMovies = await getFileData(PATH_TO_ALL_MOVIES);
 
-  return allMovies.filter((current) =>
-    current.title.toLowerCase().includes(movieTitle.toLowerCase()),
+  return allMovies.filter(
+    ({ title, original_title = "", overview = "" }) =>
+      title.toLowerCase().includes(movieQuery.toLowerCase()) ||
+      original_title?.toLowerCase().includes(movieQuery.toLowerCase()) ||
+      overview.toLowerCase().includes(movieQuery.toLowerCase()),
   );
 };
 
@@ -206,6 +209,6 @@ module.exports = {
   getFileData,
   updateMovieRating,
   deleteMoviebyId,
-  findMoviesByTitle,
+  findMoviesByQuery,
   findActorsByName,
 };
