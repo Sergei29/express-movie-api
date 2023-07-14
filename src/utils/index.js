@@ -1,7 +1,12 @@
 const fs = require("fs/promises");
 const path = require("path");
 
+const actors = require("../data/people.json");
+const movieDetails = require("../data/movieDetails.json");
+const movies = require("../data/movies.json");
+
 const PATH_TO_ALL_MOVIES = path.resolve(__dirname, "..", "data", "movies.json");
+const PATH_TO_ALL_ACTORS = path.resolve(__dirname, "..", "data", "people.json");
 const PATH_TO_ALL_MOVIE_DETAILS = path.resolve(
   __dirname,
   "..",
@@ -36,7 +41,7 @@ const writeFile = async (data, pathToFile) => {
   try {
     await fs.writeFile(pathToFile, JSON.stringify(data));
   } catch (error) {
-    throw new Error(`Failed to write ${filename}: ${error.toString()}`);
+    throw new Error(`Failed to write ${pathToFile}: ${error.toString()}`);
   }
 };
 
@@ -73,7 +78,13 @@ const updateMovieRating = async (movieId, rating) => {
     throw new Error("Not valid rating: must be a number between 0.5 and 10");
   }
 
+  /**
+   * @type {typeof movieDetails}
+   */
   const allMovieDetails = await getFileData(PATH_TO_ALL_MOVIE_DETAILS);
+  /**
+   * @type {typeof movies}
+   */
   const allMovies = await getFileData(PATH_TO_ALL_MOVIES);
 
   const foundMovieDetails = allMovieDetails.find(
@@ -127,7 +138,13 @@ const deleteMoviebyId = async (movieId) => {
   if (isNaN(+movieId)) {
     throw new Error("Not valid movie ID. Must be numeric.");
   }
+  /**
+   * @type {typeof movieDetails}
+   */
   const allMovieDetails = await getFileData(PATH_TO_ALL_MOVIE_DETAILS);
+  /**
+   * @type {typeof movies}
+   */
   const allMovies = await getFileData(PATH_TO_ALL_MOVIES);
 
   const foundMovieDetails = allMovieDetails.find(
@@ -155,4 +172,40 @@ const deleteMoviebyId = async (movieId) => {
   return movieId;
 };
 
-module.exports = { writeFile, getFileData, updateMovieRating, deleteMoviebyId };
+/**
+ * @param {string} actorName
+ */
+const findActorsByName = async (actorName) => {
+  /**
+   * @type {typeof actors}
+   */
+  const allActors = await getFileData(PATH_TO_ALL_ACTORS);
+  const foundActors = allActors.filter((current) =>
+    current.name.toLowerCase().includes(actorName.toLowerCase()),
+  );
+
+  return foundActors;
+};
+
+/**
+ * @param {string} movieTitle
+ */
+const findMoviesByTitle = async (movieTitle) => {
+  /**
+   * @type {typeof movies}
+   */
+  const allMovies = await getFileData(PATH_TO_ALL_MOVIES);
+
+  return allMovies.filter((current) =>
+    current.title.toLowerCase().includes(movieTitle.toLowerCase()),
+  );
+};
+
+module.exports = {
+  writeFile,
+  getFileData,
+  updateMovieRating,
+  deleteMoviebyId,
+  findMoviesByTitle,
+  findActorsByName,
+};
