@@ -4,7 +4,7 @@ const { THE_MOVIE_DB_API_KEY } = require("../constants");
 const verifyApiKey = (req, res, next) => {
   const { api_key } = req.query;
   if (api_key !== THE_MOVIE_DB_API_KEY) {
-    res.status(403).send("Authentication API key required");
+    res.status(401).send("Authentication API key required");
     return;
   }
   next();
@@ -23,4 +23,23 @@ const getPageNumber = (req, res, next) => {
   next();
 };
 
-module.exports = { verifyApiKey, getPageNumber };
+/**
+ * @description verifies if the request body cotnent type is json
+ * @param { Request } req
+ * @param { Response } res
+ * @param { NextFunction } next
+ */
+const requireJSONContentType = (req, res, next) => {
+  if (
+    !req.is("application/json") &&
+    !req.is("json") &&
+    !req.is("application/*")
+  ) {
+    res.status(400).send("Request content type application/json expected");
+    return;
+  }
+
+  next();
+};
+
+module.exports = { verifyApiKey, getPageNumber, requireJSONContentType };
