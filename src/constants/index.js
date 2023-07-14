@@ -1,11 +1,14 @@
 require("dotenv").config();
 
+/**
+ * @param { string } name
+ * @returns { string }
+ */
 const getEnvVariable = (name) => {
-  try {
-    return process.env[name];
-  } catch (error) {
-    throw error;
+  if (!process.env[name]) {
+    throw new Error(`Env variable ${name} is not set`);
   }
+  return process.env[name];
 };
 
 const PORT = getEnvVariable("PORT");
