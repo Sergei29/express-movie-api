@@ -14,10 +14,18 @@ indexRouter.post("/new-blog", async (req, res, next) => {
   if (!subject) {
     res.statusMessage = "Missing payload";
     res.status(401).send("Missing payload { subject, callbackUrl }");
+    return;
   }
 
-  emitter.emit(CREATE_BLOG, subject);
+  try {
+    emitter.emit(CREATE_BLOG, subject);
 
-  res.json({ received: subject, status: "processing" });
+    res.json({ received: subject, status: "processing" });
+  } catch (error) {
+    res.statusMessage = error instanceof Error ? error.name : "Server Error";
+    res
+      .status(500)
+      .send(error instanceof Error ? error.message : "Server Error");
+  }
 });
 module.exports = { indexRouter };
