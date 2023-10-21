@@ -1,5 +1,6 @@
 const { EventEmitter } = require("node:events");
 const { faker } = require("@faker-js/faker");
+const fetch = require("node-fetch");
 
 const { wait } = require("./index");
 
@@ -25,7 +26,7 @@ emitter.on(CREATE_BLOG, async (data) => {
       throw new Error(res.statusText);
     }
     const responseData = await res.json();
-    console.log("Webhook emitter/ Response: ", responseData);
+    console.log("Webhook emitter/ Response from Next.js: ", responseData);
   } catch (error) {
     console.log("Webhook emitter/ Error :>> ", error);
   }
